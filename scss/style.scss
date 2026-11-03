@@ -1,0 +1,621 @@
+
+// ============================================
+// Задание № 5
+// Препроцессор SASS / SCSS
+// ============================================
+
+@use "sass:list";
+
+// ============================================
+// 1. Переменные
+// ============================================
+
+$font: "Rubik", Arial, sans-serif;
+
+$blue: #5f95c7;
+$dark-blue: #093e52;
+$turquoise: #209fa9;
+$white: #ffffff;
+$text-color: #2c3540;
+$light-gray: #edf4f9;
+
+// Обязательная переменная-список изображений
+
+$list-img-circle:
+    "smm.jpg",
+    "email.png",
+    "ya-direct.png",
+    "seo.jpg",
+    "cross.jpg";
+
+// ============================================
+// 2. Миксины
+// ============================================
+
+// Миксин для Flexbox
+
+@mixin flexible(
+    $justify: center,
+    $align: center
+) {
+    display: flex;
+    justify-content: $justify;
+    align-items: $align;
+}
+
+// Миксин для скругления углов
+
+@mixin rounded($radius: 12px) {
+    border-radius: $radius;
+    overflow: hidden;
+}
+
+// ============================================
+// 3. Базовые стили
+// ============================================
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: $white;
+    color: $text-color;
+    font-family: $font;
+    line-height: 1.6;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font: inherit;
+}
+
+// ============================================
+// 4. Шапка сайта
+// ============================================
+
+.site-header {
+    background: $white;
+    padding: 18px 0;
+}
+
+.header-inner {
+    @include flexible(space-between, center);
+
+    width: min(1120px, calc(100% - 36px));
+    margin: 0 auto;
+    gap: 24px;
+}
+
+// Логотип
+
+.logo {
+    @include flexible(flex-start, center);
+
+    gap: 9px;
+    font-size: 23px;
+    font-weight: 700;
+    color: #252525;
+
+    .logo-mark {
+        @include flexible();
+
+        width: 35px;
+        height: 35px;
+
+        background: #b42c35;
+        color: $white;
+
+        border-radius: 8px;
+    }
+}
+
+// Основное меню
+
+.main-menu {
+    @include flexible(space-between, center);
+
+    flex: 1;
+    max-width: 860px;
+
+    background: $blue;
+
+    a {
+        flex: 1;
+        padding: 11px 12px;
+
+        color: $white;
+        text-align: center;
+        font-size: 15px;
+
+        transition: background 0.25s ease;
+
+        &:hover,
+        &:focus-visible {
+            background: $dark-blue;
+        }
+    }
+}
+
+// Кнопка мобильного меню
+
+.menu-toggle {
+    display: none;
+}
+
+// ============================================
+// 5. Главный баннер
+// ============================================
+
+.hero {
+    position: relative;
+
+    @include flexible(flex-start, center);
+    @include rounded(12px);
+
+    width: min(1120px, calc(100% - 36px));
+    aspect-ratio: 3 / 1;
+
+    margin: 14px auto 42px;
+    padding: 45px 8%;
+
+    background:
+        linear-gradient(
+            100deg,
+            rgba(4, 77, 93, 0.94),
+            rgba(42, 158, 168, 0.68)
+        ),
+        url("../img/marketing-1.jpg") center / cover;
+
+    color: $white;
+}
+
+// Текст внутри баннера
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+
+    max-width: 65%;
+
+    h1 {
+        margin: 0;
+
+        font-size: clamp(32px, 4vw, 60px);
+        font-weight: 600;
+    }
+}
+
+.hero-eyebrow {
+    margin: 0 0 8px;
+
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+.hero-subtitle {
+    max-width: 470px;
+
+    font-size: clamp(13px, 1.4vw, 18px);
+}
+
+// Декоративные элементы
+
+.hero-decoration {
+    position: absolute;
+
+    right: 6%;
+    top: 15%;
+
+    display: grid;
+    grid-template-columns: repeat(3, 55px);
+
+    gap: 15px;
+
+    transform: rotate(-8deg);
+
+    span {
+        @include flexible();
+
+        width: 55px;
+        height: 55px;
+
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        border-radius: 12px;
+
+        background: rgba(255, 255, 255, 0.16);
+        color: $white;
+
+        font-size: 28px;
+
+        box-shadow:
+            0 5px 16px rgba(0, 0, 0, 0.13);
+    }
+}
+
+// ============================================
+// 6. Шахматная верстка
+// ============================================
+
+.repeat-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+// Обязательный цикл @for
+// Генерирует классы:
+// .repeat-lines1
+// .repeat-lines2
+// .repeat-lines3
+// .repeat-lines4
+
+@for $i from 1 through 4 {
+
+    .repeat-lines#{$i} {
+
+        @include flexible(space-between, center);
+
+        gap: 28px;
+        margin: 0 0 36px;
+
+        // Равномерное распределение
+        // изображения и текста
+
+        .img,
+        .text {
+            flex: 1 1 50%;
+            min-width: 0;
+        }
+
+        // Блок изображения
+
+        .img {
+            aspect-ratio: 2 / 1.5;
+
+            @include rounded(10px);
+
+            img {
+                width: 100%;
+                height: 100%;
+
+                object-fit: cover;
+
+                transition: transform 0.3s ease;
+            }
+
+            &:hover img {
+                transform: scale(1.04);
+            }
+        }
+
+        // Текстовый блок
+
+        .text {
+            font-size: calc(0.5rem + 0.8vw);
+            line-height: 1.55;
+
+            h2 {
+                margin: 0 0 12px;
+
+                font-size: calc(0.9rem + 1vw);
+                color: $dark-blue;
+            }
+
+            p {
+                margin: 0 0 12px;
+            }
+        }
+
+        // Чередование расположения блоков
+        // в каждой четной строке
+
+        @if $i % 2 == 0 {
+            flex-direction: row-reverse;
+        }
+
+    }
+}
+
+// ============================================
+// 7. Круглые изображения
+// ============================================
+
+.marketing-tools {
+    max-width: 1120px;
+
+    margin: 25px auto 50px;
+    padding: 0 20px;
+
+    h2 {
+        margin-bottom: 25px;
+
+        text-align: center;
+        color: $dark-blue;
+        font-size: 25px;
+    }
+}
+
+.circle-line {
+    @include flexible(space-between, flex-start);
+
+    gap: 20px;
+
+    // Контейнер отдельного элемента
+
+    .circle-item {
+        flex: 1 1 0;
+        min-width: 0;
+
+        text-align: center;
+
+        p {
+            margin: 9px 0 0;
+            font-size: 14px;
+        }
+    }
+
+    // Общий стиль круглых блоков
+
+    .circle {
+        @include flexible();
+
+        width: min(100%, 155px);
+        aspect-ratio: 1 / 1;
+
+        margin: 0 auto;
+
+        border: 3px solid #5862a9;
+        border-radius: 50%;
+
+        background-color: $light-gray;
+        background-size: cover;
+        background-position: center;
+
+        box-shadow:
+            0 3px 8px rgba(65, 78, 150, 0.22);
+
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: scale(1.06);
+        }
+
+        span {
+            @include flexible();
+
+            min-width: 52px;
+            min-height: 36px;
+
+            padding: 4px 8px;
+
+            background: rgba(255, 255, 255, 0.88);
+            border-radius: 8px;
+
+            color: $dark-blue;
+            font-weight: 700;
+        }
+    }
+
+    // Обязательный цикл @each
+    // Список $list-img-circle содержит 5 файлов.
+    // Для каждого файла создается отдельный класс:
+    // .circle1, .circle2, .circle3, .circle4, .circle5
+
+    @each $image in $list-img-circle {
+
+        $number: list.index($list-img-circle, $image);
+
+        .circle#{$number} {
+            background-image: url("../img/#{$image}");
+        }
+
+    }
+}
+
+// ============================================
+// 8. Подвал сайта
+// ============================================
+
+.site-footer {
+    padding: 22px 15px;
+
+    background: $dark-blue;
+    color: $white;
+
+    text-align: center;
+    font-size: 13px;
+}
+
+// ============================================
+// 9. Адаптация для планшетов
+// ============================================
+
+@media (max-width: 900px) {
+
+    .hero {
+        aspect-ratio: 2.7 / 1;
+    }
+
+    .hero-decoration {
+        grid-template-columns: repeat(2, 45px);
+
+        span {
+            width: 45px;
+            height: 45px;
+        }
+    }
+}
+
+// ============================================
+// 10. Мобильная версия
+// ============================================
+
+@media (max-width: 700px) {
+
+    // Шапка
+
+    .header-inner {
+        flex-wrap: wrap;
+    }
+
+    // Гамбургер-меню
+
+    .menu-toggle {
+        @include flexible();
+
+        flex-direction: column;
+
+        gap: 5px;
+
+        width: 44px;
+        height: 44px;
+
+        margin-left: auto;
+
+        border: 0;
+        border-radius: 8px;
+
+        background: $blue;
+
+        cursor: pointer;
+
+        span {
+            width: 24px;
+            height: 3px;
+
+            background: $white;
+            border-radius: 4px;
+        }
+    }
+
+    // Выпадающее меню
+
+    .main-menu {
+        display: none;
+
+        width: 100%;
+        max-width: none;
+
+        flex: 0 0 100%;
+        flex-direction: column;
+
+        &.is-open {
+            display: flex;
+        }
+
+        a {
+            width: 100%;
+
+            border-top:
+                1px solid rgba(255, 255, 255, 0.2);
+        }
+    }
+
+    // Главный баннер
+
+    .hero {
+        min-height: 260px;
+        aspect-ratio: auto;
+
+        padding: 28px;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .hero-decoration {
+        display: none;
+    }
+
+    // Шахматные строки на мобильных устройствах
+    // Все изображения располагаются над текстом
+
+    @for $i from 1 through 4 {
+
+        .repeat-lines#{$i} {
+
+            flex-direction: column;
+
+            gap: 15px;
+            margin-bottom: 36px;
+
+            .img,
+            .text {
+                width: 100%;
+                flex: none;
+            }
+
+            .text {
+                font-size: 15px;
+
+                h2 {
+                    font-size: 22px;
+                }
+            }
+
+        }
+    }
+
+    // Круглые изображения на мобильных экранах
+
+    .circle-line {
+        flex-wrap: wrap;
+        justify-content: center;
+
+        gap: 20px;
+
+        .circle-item {
+            flex: 0 1 135px;
+        }
+    }
+}
+
+// ============================================
+// 11. Доступность
+// ============================================
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+    }
+}
+
+// Корректное отображение круглых изображений
+
+.circle-line {
+    .circle {
+        background-color: #ffffff;
+        background-size: contain;
+        background-repeat: no-repeat;
+
+        span {
+            display: none;
+        }
+    }
+}
